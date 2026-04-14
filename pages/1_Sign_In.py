@@ -48,7 +48,7 @@ with tab1:
                 user = authenticate_user(email, password)
                 if user:
                     st.session_state.user = user
-                    st.switch_page("app.py")
+                    st.rerun()
                 else:
                     st.error("Authentication failed. Check credentials.")
 
