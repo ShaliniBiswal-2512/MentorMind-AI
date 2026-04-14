@@ -120,7 +120,8 @@ def create_user(name, email, password):
     c = conn.cursor()
     hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     try:
-        c.execute('INSERT INTO users (name, email, password_hash, login_count) VALUES (?, ?, ?, 0)', (name, email, hashed))
+        # Save as standard string to prevent Linux SQLite b'...' literal byte bugs
+        c.execute('INSERT INTO users (name, email, password_hash, login_count) VALUES (?, ?, ?, 0)', (name, email, hashed.decode('utf-8')))
         conn.commit()
         return True
     except sqlite3.IntegrityError:
@@ -138,17 +139,27 @@ def authenticate_user(email, password):
         # Cross-platform robust cast for SQLite returned blobs
         db_hash = user[2]
         if isinstance(db_hash, str):
-            db_hash = db_hash.encode('utf-8')
+            if db_hash.startswith("b'") and db_hash.endswith("'"):
+                db_hash = db_hash[2:-1].encode('utf-8')
+            elif db_hash.startswith('b"') and db_hash.endswith('"'):
+                db_hash = db_hash[2:-1].encode('utf-8')
+            else:
+                db_hash = db_hash.encode('utf-8')
             
         try:
-            if bcrypt.checkpw(password.strip().encode('utf-8'), db_hash):
+            # Check both raw password and stripped password to handle mobile keyboard spaces
+            raw_pw = password.encode('utf-8')
+            clean_pw = password.strip().encode('utf-8')
+            
+            if bcrypt.checkpw(raw_pw, db_hash) or bcrypt.checkpw(clean_pw, db_hash):
                 new_count = (user[3] if user[3] is not None else 0) + 1
                 c.execute('UPDATE users SET login_count = ? WHERE id = ?', (new_count, user[0]))
                 conn.commit()
                 conn.close()
                 return {"id": user[0], "name": user[1], "email": clean_email, "login_count": new_count}
         except Exception as e:
-            pass # fallback on crash
+            conn.close()
+            return f"Error reading database hash or updating: {str(e)} (Hash: {type(db_hash)})"
 
     conn.close()
     return None

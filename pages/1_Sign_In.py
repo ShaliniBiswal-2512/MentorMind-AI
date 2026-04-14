@@ -46,9 +46,11 @@ with tab1:
                 st.error("Access Denied: Missing credentials.")
             else:
                 user = authenticate_user(email, password)
-                if user:
+                if isinstance(user, dict):
                     st.session_state.user = user
                     st.rerun()
+                elif isinstance(user, str):
+                    st.error(f"System Error: {user}")
                 else:
                     st.error("Authentication failed. Check credentials.")
 
