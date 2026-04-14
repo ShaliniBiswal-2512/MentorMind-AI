@@ -1,0 +1,25 @@
+# Database Files
+*.sqlite
+*.db
+MentorMind.db
+
+# Environment Variables & Secrets
+.env
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Audio/Temporary Files
+*.mp3
+*.wav
+temp_pie.png
+scratch_*.py
+
+# Python Caches
+__pycache__/
+*.pyc
+
+# OS Files
+.DS_Store

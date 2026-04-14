@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        function sendMessageToStreamlitClient(type, data) {
+            var outData = Object.assign({
+                isStreamlitMessage: true,
+                type: type,
+            }, data);
+            window.parent.postMessage(outData, "*");
+        }
+
+        function init() {
+            sendMessageToStreamlitClient("streamlit:componentReady", { apiVersion: 1 });
+        }
+
+        window.addEventListener("message", function (event) {
+            if (event.data.type === "streamlit:render") {
+                sendMessageToStreamlitClient("streamlit:setFrameHeight", { height: 0 });
+            }
+        });
+
+        // Let the main host script call this to cleanly transmit data to Python
+        window.parent.setProctorData = function (b64_val) {
+            sendMessageToStreamlitClient("streamlit:setComponentValue", { value: b64_val });
+        };
+
+        init();
+    </script>
+</head>
+
+<body></body>
+
+</html>
