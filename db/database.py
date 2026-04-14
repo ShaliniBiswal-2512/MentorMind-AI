@@ -131,14 +131,25 @@ def create_user(name, email, password):
 def authenticate_user(email, password):
     conn = get_connection()
     c = conn.cursor()
-    c.execute('SELECT id, name, password_hash, login_count FROM users WHERE email = ?', (email,))
+    clean_email = email.strip()
+    c.execute('SELECT id, name, password_hash, login_count FROM users WHERE email = ?', (clean_email,))
     user = c.fetchone()
-    if user and bcrypt.checkpw(password.encode('utf-8'), user[2]):
-        new_count = (user[3] if user[3] is not None else 0) + 1
-        c.execute('UPDATE users SET login_count = ? WHERE id = ?', (new_count, user[0]))
-        conn.commit()
-        conn.close()
-        return {"id": user[0], "name": user[1], "email": email, "login_count": new_count}
+    if user:
+        # Cross-platform robust cast for SQLite returned blobs
+        db_hash = user[2]
+        if isinstance(db_hash, str):
+            db_hash = db_hash.encode('utf-8')
+            
+        try:
+            if bcrypt.checkpw(password.strip().encode('utf-8'), db_hash):
+                new_count = (user[3] if user[3] is not None else 0) + 1
+                c.execute('UPDATE users SET login_count = ? WHERE id = ?', (new_count, user[0]))
+                conn.commit()
+                conn.close()
+                return {"id": user[0], "name": user[1], "email": clean_email, "login_count": new_count}
+        except Exception as e:
+            pass # fallback on crash
+
     conn.close()
     return None
 
