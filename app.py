@@ -7,8 +7,7 @@ from db.database import init_db, get_user_by_id, count_today_attempts
 
 load_dotenv(override=True)
 
-# Initialize Database
-init_db()
+# Initialize Database (moved to database.py for cross-page persistence)
 
 st.set_page_config(
     page_title="MentorMind AI",

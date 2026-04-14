@@ -250,3 +250,6 @@ def clear_user_interviews(user_id):
     c.execute('DELETE FROM interviews WHERE user_id = ?', (user_id,))
     conn.commit()
     conn.close()
+
+# Initialize DB on load
+init_db()
