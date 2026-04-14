@@ -277,7 +277,7 @@ if st.session_state.consent_given and st.session_state.current_level < 90:
                 st.session_state.show_switch_warning = True
             st.rerun()
         if st.button('\u200b ', key='sys_tab_res'): st.rerun()
-    st.components.v1.html(silent_host_js, height=0)
+    st.html(silent_host_js)
 
 # --- TIMER ---
 if st.session_state.consent_given and st.session_state.tab_switches < 3:
