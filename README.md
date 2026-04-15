@@ -1,3 +1,14 @@
+---
+title: MentorMind AI
+emoji: 🚀
+colorFrom: blue
+colorTo: indigo
+sdk: streamlit
+sdk_version: "1.37.0"
+app_file: app.py
+pinned: false
+---
+
 # 🧠 MentorMind AI - Intelligence Protocol
 **An Advanced AI-Proctored Teacher Interview & Evaluation System**
 
