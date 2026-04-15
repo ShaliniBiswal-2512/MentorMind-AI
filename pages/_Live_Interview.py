@@ -220,7 +220,7 @@ silent_host_js = r'''
                             } catch(e) {}
                         }
                     }
-                }, 1000);
+                }, 4000);
             }).catch(err => {
                 const doc = window.parent.document;
                 const btns = Array.from(doc.querySelectorAll('button'));
