@@ -2,3 +2,8 @@
 enableWebsocketCompression = false
 enableCORS = false
 enableXsrfProtection = false
+fileWatcherType = "none"
+headless = true
+
+[browser]
+gatherUsageStats = false
