@@ -7,7 +7,7 @@
 
 ## 🌐 Live Demo  
 👉 **Try the app here:**  
-🔗 [https://mentormind-ai-hgyh.onrender.com](https://mentormind-ai-hgyh.onrender.com)  
+🔗 https://mentormind-ai-hgyh.onrender.com  
 
 ---
 
